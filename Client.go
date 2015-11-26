@@ -19,7 +19,7 @@ type Pair struct{
 
 var Cache = make(map[string]string)
 var Data = make(map[int]string)
-var Instances = []string{"3020","3021","3022"}
+var Instances = []string{"3000","3001","3002"}
 var S_keys []string
 
 func g_p(text string)(string){
