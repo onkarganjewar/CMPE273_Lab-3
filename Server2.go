@@ -8,18 +8,18 @@ import (
     "strconv"
 )
 
-type MapData struct{
+type Pair struct{
 	Key int
 	Value string
 }
 
-type MapDataArray struct{
-	Maps []MapData
+type PairArr struct{
+	Maps []Pair
 }
 
 var data = make(map[int]string)
 
-func updateMap(rw http.ResponseWriter, req *http.Request, p httprouter.Params) {
+func upd_K(rw http.ResponseWriter, req *http.Request, p httprouter.Params) {
 	key,_ := strconv.Atoi(p.ByName("key"))
 	value := p.ByName("value")
 	data[key] = value
@@ -27,12 +27,12 @@ func updateMap(rw http.ResponseWriter, req *http.Request, p httprouter.Params) {
 	fmt.Fprint(rw, "200")
 }
 
-func getMapData(rw http.ResponseWriter, req *http.Request, p httprouter.Params) {
+func get_K(rw http.ResponseWriter, req *http.Request, p httprouter.Params) {
 	key,_ := strconv.Atoi(p.ByName("key"))
-	mapData := new(MapData)
-	mapData.Key = key
-	mapData.Value = data[key]
-	outgoingJSON, err := json.Marshal(mapData)
+	pair := new(Pair)
+	pair.Key = key
+	pair.Value = data[key]
+	oj, err := json.Marshal(pair)
 	if err != nil {
 		//log.Println(error.Error())
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
@@ -40,19 +40,20 @@ func getMapData(rw http.ResponseWriter, req *http.Request, p httprouter.Params) 
 	}
 	rw.Header().Set("Content-Type", "application/json")
 	rw.WriteHeader(http.StatusCreated)
-	fmt.Fprint(rw, string(outgoingJSON))
+	fmt.Fprint(rw, string(oj))
 }
 
-func getAllMapData(rw http.ResponseWriter, req *http.Request, p httprouter.Params) {
-	mapDataArray := new(MapDataArray)
-	mapDataArray.Maps = []MapData{}
+func getall_K(rw http.ResponseWriter, req *http.Request, p httprouter.Params) {
+	pairarr := new(PairArr)
+	pairarr.Maps = []Pair{}
 	for k, v := range data {
-		mapData := new(MapData)
-		mapData.Key = k
-		mapData.Value = v
-		mapDataArray.Maps = append(mapDataArray.Maps, *mapData)
+        fmt.Println("k:", k, "v:", v)
+		pair := new(Pair)
+		pair.Key = k
+		pair.Value = v
+		pairarr.Maps = append(pairarr.Maps, *pair)
 	}
-	outgoingJSON, err := json.Marshal(mapDataArray)
+	oj, err := json.Marshal(pairarr)
 	if err != nil {
 		//log.Println(error.Error())
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
@@ -60,16 +61,16 @@ func getAllMapData(rw http.ResponseWriter, req *http.Request, p httprouter.Param
 	}
 	rw.Header().Set("Content-Type", "application/json")
 	rw.WriteHeader(http.StatusCreated)
-	fmt.Fprint(rw, string(outgoingJSON))
+	fmt.Fprint(rw, string(oj))
 }
 
 func main() {
     mux := httprouter.New()
-    mux.PUT("/keys/:key/:value", updateMap)
-    mux.GET("/keys/:key", getMapData)
-    mux.GET("/keys", getAllMapData)
+    mux.PUT("/keys/:key/:value", upd_K)
+    mux.GET("/keys/:key", get_K)
+    mux.GET("/keys", getall_K)
     server := http.Server{
-            Addr:        "0.0.0.0:3011",
+            Addr:        "0.0.0.0:3001",
             Handler: mux,
     }
     server.ListenAndServe()
