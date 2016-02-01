@@ -2,7 +2,7 @@
 
 ## Simple RESTful key-value cache data store
 
-The purpose of this lab is to demonstrate how consistent hashing works and to implement a simple RESTful key-value cache data store. Client implements consistent hashing using md5 hashing function and shards the provided sample data set among the available server nodes. RESTful endpoints are provided to store & retrieve key-value pairs.
+The purpose of this lab is to demonstrate how consistent hashing works and to implement a simple RESTful key-value cache data store. Client implements consistent hashing using md5 hashing algorithm and shards the provided sample data set among the available server nodes. RESTful endpoints are provided to store & retrieve key-value pairs.
 
 ### Requirements  
 •	Golang latest stable version (I have used go1.5 on Windows)   
